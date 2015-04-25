@@ -1,0 +1,27 @@
+<ion-view view-title="API">
+    <ion-content>
+        <div class="list card">
+            <div class="item item-body">
+                <button class="button button-full button-positive" ng-click="getProjects()">
+                    Projects
+                </button>
+            </div>
+
+        </div>
+        <div class="list card">
+            <div class="item item-body" ng-controller="OrganizationController">
+                <button class="button button-full button-positive" ng-click="PopUp()">
+                    Organizations
+                </button>
+            </div>
+        </div>
+    </ion-content>
+
+    <!--<ion-content ng-hide="view">-->
+        <!--<div class="list card" >-->
+            <!--<div class="item item-body">-->
+                <!--Please login to use APIs.-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</ion-content>-->
+</ion-view>

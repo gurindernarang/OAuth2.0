@@ -1,0 +1,20 @@
+<ion-view view-title="Signin">
+    <ion-content >
+        <div class="list card">
+            <div class="item item-body">
+                <button class="button button-full button-positive" ng-click="login()" ng-hide="requestToken_view">
+                    Authorize App
+                </button>
+                <button class="button button-full button-positive" ng-click="fetchAccessTokenNow()" ng-hide="accessToken_view">
+                    Get Access Token
+                </button>
+                <button class="button button-full button-positive" ng-click="refreshToken()" ng-hide="refreshtoken_view">
+                    Get Refresh Token
+                </button>
+                <button class="button button-full button-positive" ng-click="LogOut()" ng-hide="logout_view">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

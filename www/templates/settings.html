@@ -1,0 +1,36 @@
+<ion-view view-title="Settings">
+    <ion-content>
+        <div class="list card">
+            <div class="item item-body">
+                <ion-list>
+                    <input type="text" placeholder="URL" ng-model="settings.url" class="default_input">
+                </ion-list>
+
+                <ion-list>
+                    <input type="text" placeholder="Client Id" ng-model="settings.client_id" class="default_input">
+                </ion-list>
+
+                <ion-list>
+                    <input type="text" placeholder="Client Secret" ng-model="settings.client_secret"
+                           class="default_input">
+                </ion-list>
+
+                <ion-list>
+                    <input type="text" placeholder="API key" ng-model="settings.api_key"
+                           class="default_input">
+                </ion-list>
+
+                <ion-list>
+                    <input type="text" placeholder="Redirect URI" ng-model="settings.redirect_uri"
+                           class="default_input">
+                </ion-list>
+
+                <ion-list>
+                    <button class="button button-full button-positive" ng-click="saveInLocalStorage()">
+                        Save
+                    </button>
+                </ion-list>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
