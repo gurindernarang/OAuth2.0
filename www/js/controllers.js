@@ -2,8 +2,46 @@ angular.module('starter.controllers', [])
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////   Signin Ctrl //////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    .controller('SigninCtrl', function ($scope, $http, $q, $localStorage, $state,
-                                        menuItemsService, $authorizationService) {
+
+    .controller('NavigationCtrl', function ($scope, $state,OrganizationService) {
+        $scope.add_project = function(){
+
+            $state.go('app.add_project', {}, {reload: true})
+
+        }
+
+        $scope.getProjects = function() {
+            $state.go('app.projects', {}, {reload: true})
+        }
+        $scope.getOrganizations = function(){
+            $state.go('app.organizations', {project_id: 9}, {reload: true})
+        }
+
+        $scope.project_update = function() {
+
+            $state.go('app.update_project', {}, {reload: true})
+        }
+        $scope.add_organization = function(){
+
+            $state.go('app.add_organization', {}, {reload: true})
+
+        }
+        $scope.organization_update = function(){
+
+            $state.go('app.update_organization',{},{reload: true})
+        }
+        $scope.add_contact = function(){
+
+            $state.go('app.add_contact',{},{reload: true})
+        }
+        $scope.update_contact = function(){
+               $state.go('app.update_contact',{},{reload: true})
+        }
+    })
+
+
+
+    .controller('SigninCtrl', function ($scope, $state,$http, $q, $localStorage) {
 
         $scope.requestToken_view = false;
         $scope.accessToken_view = true;
@@ -26,26 +64,14 @@ angular.module('starter.controllers', [])
             $scope.logout_view = false;
         }
 
-        $scope.menuItems = menuItemsService.menuList($authorizationService.isLoggedIn())
-
-        $scope.settingsView = function () {
-            $state.go('app.settings', {}, {reload: true});
-        }
-        $scope.projects = function () {
-            $state.go('app.projects', {}, {reload: true});
-        }
-        $scope.projectNew = function () {
-            $state.go('app.project_new', {}, {reload: true});
-        }
-        $scope.organizationList = function () {
-            $state.go('app.project_new', {}, {reload: true});
-        }
         $scope.LogOut = function() {
             $localStorage.clear();
             $state.go('app.signin', {}, {reload: true})
         }
 
-        console.log("Access Token : ", $scope.accessToken)
+
+        $scope.requestToken = $localStorage.get('requestToken', false)
+        $scope.accessToken = $localStorage.get('accessToken', false);
 
         var main_url = "http://ashish.staging.workinggrouplink.com"
         var clientId = "ccd00369add756d38a946494b934c4409535807cb9dad12cd8d393423ae48d9a";
@@ -73,7 +99,7 @@ angular.module('starter.controllers', [])
                 if (cordovaMetadata.hasOwnProperty("org.apache.cordova.inappbrowser") === true) {
 
 
-                    var browserRef = window.open(url_for_auth, '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
+                    var browserRef = window.open(url_for_auth, '_blank', 'location=yes,clearsessioncache=yes,clearcache=yes');
 
                     browserRef.addEventListener("loadstart", function (event) {
 
@@ -83,7 +109,7 @@ angular.module('starter.controllers', [])
 
                             $localStorage.set("RequestToken", requestToken);
                             browserRef.close();
-                            alert('Successfully authorized, Please fetch your access token.')
+                            alert('Successfully authorized , Please fetch your access token.');
                             $state.go('app.signin', {}, {reload: true})
                             $scope.requestToken = requestToken
 
@@ -132,7 +158,6 @@ angular.module('starter.controllers', [])
 
                         deferred.reject("Problem authenticating");
                     })
-
             }
         }
 
@@ -143,22 +168,7 @@ angular.module('starter.controllers', [])
         }
     })
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////   Api Ctrl /////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    .controller('ApiCtrl', function ($scope, $state) {
-
-        $scope.getProjects = function() {
-            console.log('----')
-            $state.go('app.projects', {}, {reload: true})
-        }
-
-        $scope.getOrganizations = function(){
-            $state.go('app.organizations', {project_id: 9}, {reload: true})
-        }
-
-    })
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////   Secure Ctrl //////////////////////////////////////
@@ -182,18 +192,46 @@ angular.module('starter.controllers', [])
             $localStorage.setObject("credentials", $scope.settings);
         }
     })
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////   UpdateProject Ctrl       /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    .controller('UpdateProjectController', function ($scope,ProjectService) {
+
+        $scope.update_project = {};
+
+        $scope.UpdateProject = function (){
+
+            var parameters = {
+
+                project_id: $scope.update_project.project_id,
+                name: $scope.update_project.name,
+                billing_code: $scope.update_project.billing_code,
+                client_name: $scope.update_project.client_name
+                //method: 'PATCH'
+            }
+
+            console.log("Para:",JSON.stringify(parameters))
+
+            return ProjectService.updateProject({
+                parameters: parameters,
+                success: function (data) {
+
+                    $scope.update_project = {};
+                },
+                error: function (data) {
+
+                }
+            })
+
+        }
+    })
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////   Secure Ctrl //////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////   AddProject Ctrl ////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    .controller('ProjectController', function ($scope, projects, ProjectService) {
-
-        // Form data for the login modal
-        console.log('projects')
-        console.log(projects)
-        $scope.projects = projects;
-
+    .controller('AddProjectController', function ($scope,ProjectService) {
 
         $scope.project_new = {};
 
@@ -205,25 +243,232 @@ angular.module('starter.controllers', [])
                 client_name: $scope.project_new.client_name
             }
 
-            console.log("Parameters:",JSON.stringify(parameters))
+            console.log("Para:",JSON.stringify(parameters))
 
-            return ProjectService.createProject(parameters);
+            return ProjectService.createProject({
+                parameters: parameters,
+                success: function (data) {
+
+                    $scope.project_new = {};
+                },
+                error: function (data) {
+
+                }
+            })
 
         }
     })
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////// Organization controller //////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    .controller('OrganizationController', function ($scope, organizations) {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////  Project Ctrl   /////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    .controller('ProjectController', function ($scope, projects, ProjectService) {
 
         // Form data for the login modal
+        console.log('projects')
+        console.log(projects)
+        $scope.projects = projects;
+
+    })
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////LogOut controller/////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    .controller('TabCtrl', function ($scope,$localStorage) {
+        $scope.view = $localStorage.get("access_token");
+
+        console.log("Access token : ",$scope.view);
+    })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////   Organization Controller   /////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    .controller('OrganizationController', function ($scope, organizations) {
         console.log('organizations')
-
         console.log(organizations)
-
         $scope.organizations = organizations;
 
     })
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// AddOrganization Ctrl             ///////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    .controller('AddOrganizationController', function ($scope,OrganizationService) {
+
+        $scope.add_org = {};
+
+        $scope.CreateOrganization = function (){
+
+            var parameters = {
+                project_id: $scope.add_org.project_id,
+                name: $scope.add_org.name,
+                division: $scope.add_org.division,
+                street_1: $scope.add_org.street_1,
+                street_2: $scope.add_org.street_2,
+                city: $scope.add_org.city,
+                zip_code: $scope.add_org.zip_code,
+                country: $scope.add_org.country,
+                state: $scope.add_org.state,
+                office_phone: $scope.add_org.office_phone
+
+            }
+
+            console.log("Para:",JSON.stringify(parameters))
+
+            return OrganizationService.createOrganization({
+                parameters: parameters,
+                success: function (data) {
+
+                    $scope.add_org = {};
+                },
+                error: function (data) {
+
+                }
+            })
+
+        }
+    })
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   UpdateOrganization Ctrl   ///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    .controller('UpdateOrganizationController', function ($scope,OrganizationService) {
+
+        $scope.update_org = {};
+
+        $scope.UpdateOrganization = function (){
+
+            var parameters = {
+                project_id: $scope.update_org.project_id,
+                name: $scope.update_org.name,
+                division: $scope.update_org.division,
+                street_1: $scope.update_org.street_1,
+                street_2: $scope.update_org.street_2,
+                city: $scope.update_org.city,
+                zip_code: $scope.update_org.zip_code,
+                country: $scope.update_org.country,
+                state: $scope.update_org.state,
+                office_phone: $scope.update_org.office_phone
+
+            }
+
+            console.log("Para:",JSON.stringify(parameters))
+
+            return OrganizationService.updateOrganization({
+                parameters: parameters,
+                success: function (data) {
+
+                    $scope.update_org = {};
+                },
+                error: function (data) {
+
+                }
+            })
+
+        }
+    })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Add Contact Ctrl //////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    .controller('AddContactController', function ($scope,ContactService) {
+
+        $scope.contact = {
+            assistant: {}
+        };
+
+        $scope.AddContact = function (){
+
+            var _contact = $scope.contact
+            var parameters = {
+                project_id: _contact.project_id,
+                organization_id: _contact.organization_id,
+                contact: {
+                    title: _contact.title,
+                    first_name: _contact.first_name,
+                    last_name: _contact.last_name,
+                    email: _contact.email,
+                    digest: _contact.digest,
+                    office_phone: _contact.office_phone,
+                    mobile_phone: _contact.mobile_phone,
+                    home_phone: _contact.home_phone,
+                    fax_phone: _contact.fax_phone
+                },
+                assistant: {
+                    email: _contact.assistant.email,
+                    first_name: _contact.assistant.first_name,
+                    last_name: _contact.assistant.last_name,
+                    office_phone: _contact.assistant.office_phone,
+                    mobile_phone: _contact.assistant.mobile_phone
+
+                }
+            }
+
+            console.log("Para:",JSON.stringify(parameters))
+
+            return ContactService.createContact({
+                parameters: parameters,
+                success: function (data) {
+
+                    $scope.contact= {};
+                },
+                error: function (data) {
+
+                }
+            })
+
+        }
+    })
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////   Update Contact Controller    /////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    .controller('UpdateContactController', function ($scope,ContactService) {
+
+        $scope.contact_update = {
+            assistant: {}
+        };
+
+        $scope.AddContact = function (){
+
+            var _contact_update = $scope.contact_update
+            var parameters = {
+                    contact_id: _contact_update.contact_id,
+                    title: _contact_update.title,
+                    first_name: _contact_update.first_name,
+                    last_name: _contact_update.last_name,
+                    digest: _contact_update.digest,
+                    office_phone: _contact_update.office_phone,
+                    mobile_phone: _contact_update.mobile_phone,
+                    home_phone: _contact_update.home_phone,
+                    fax_phone: _contact_update.fax_phone,
+                assistant: {
+                    email: _contact_update.assistant.email,
+                    first_name: _contact_update.assistant.first_name,
+                    last_name: _contact_update.assistant.last_name,
+                    office_phone: _contact_update.assistant.office_phone,
+                    mobile_phone: _contact_update.assistant.mobile_phone
+
+                }
+            }
+            console.log("Para:",JSON.stringify(parameters))
+
+            return ContactService.updateContact({
+                parameters: parameters,
+                success: function (data) {
+                    $scope.contact_update= {};
+                },
+                error: function (data){
+                }
+            })
+        }
+    })

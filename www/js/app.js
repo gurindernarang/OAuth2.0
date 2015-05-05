@@ -20,9 +20,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         });
     })
 
-    .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
-
-        $httpProvider.defaults.useXDomain = true;
+    .config(function ($stateProvider, $urlRouterProvider) {
 
         $stateProvider
 
@@ -44,7 +42,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 
             .state('app.signin', {
-                cache: false,
+                cache:false,
                 url: '/signin',
                 views: {
                     'menuContent': {
@@ -69,18 +67,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 }
             })
 
-            .state('app.project_new', {
+            .state('app.add_project', {
                 cache:false,
-                url: '/project_new',
+                url: '/add_project',
                 views: {
                     'menuContent': {
-                        templateUrl: 'templates/project_new.html',
-                        controller: 'ProjectController'
+                        templateUrl: 'templates/add_project.html',
+                        controller: 'AddProjectController'
                     }
-                },
-                resolve: {
-                    projects: function(ProjectService) {
-                        return ProjectService.getProjects()
+                }
+            })
+
+            .state('app.update_project', {
+                cache:false,
+                url: '/update_project',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/update_project.html',
+                        controller: 'UpdateProjectController'
                     }
                 }
             })
@@ -101,15 +105,57 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
                 }
             })
 
-            .state('app.api', {
-                url: "/api",
+            .state('app.add_organization', {
+                cache:false,
+                url: '/add_organization',
                 views: {
                     'menuContent': {
-                        templateUrl: "templates/api.html",
-                        controller: 'ApiCtrl'
+                        templateUrl: 'templates/add_organization.html',
+                        controller: 'AddOrganizationController'
+                    },
+                    resolve: {
+                        organizations: function($stateParams,OrganizationService) {
+                            return OrganizationService.getOrganizations($stateParams.project_id)
+
+                        }
+                    }
+                }
+            })
+
+            .state('app.update_organization', {
+                cache:false,
+                url: '/update_organization',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/update_organization.html',
+                        controller: 'UpdateOrganizationController'
+                    }
+                }
+            })
+
+            .state('app.add_contact', {
+                cache:false,
+                url: '/add_contact',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/add_contact.html',
+                        controller: 'AddContactController'
+                    }
+                }
+            })
+
+            .state('app.update_contact', {
+                cache:false,
+                url: '/update_contact',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/update_contact.html',
+                        controller: 'UpdateContactController'
                     }
                 }
             });
+
+
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/app/signin');

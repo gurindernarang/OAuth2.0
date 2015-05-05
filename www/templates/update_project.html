@@ -1,0 +1,19 @@
+<ion-view>
+    <ion-content>
+        <ion-list>
+            <input type="text" placeholder="Project Id" ng-model="update_project.project_id" class="default_input">
+
+            <input type="text" placeholder="Project Name" ng-model="update_project.name" class="default_input">
+
+            <input type="text" placeholder="Billing Code" ng-model="update_project.billing_code" class="default_input">
+
+            <input type="text" placeholder="Client Name" ng-model="update_project.client_name"
+                   class="default_input">
+        </ion-list>
+        <div class="item item-body">
+            <button class="button button-full button-positive" ng-click="UpdateProject()">
+                Create Project
+            </button>
+        </div>
+    </ion-content>
+</ion-view>
